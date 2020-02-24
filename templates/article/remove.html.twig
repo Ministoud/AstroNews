@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="backgrounded filled">
+        <div class="container h-100 spaced">
+            <div class="row h-100 align-items-center">
+                <div class="col-12 text-center alert alert-success">
+                    <p>Cet article a bien été supprimé !</p>
+                    <a class="btn btn-primary" href="{{ path('listArticles') }}">Retour à la liste des articles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

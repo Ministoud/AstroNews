@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="backgrounded filled">
+        <div class="container spaced">
+            <div class="row hidden-md-up">
+                {% for section in sections %}
+                    <div class="col-md-4">
+                        <div class="card text-center mb-3 bg-dark border-light text-white">
+                            <div class="card-block spaced">
+                                <a class="card-title" href="{{ path('detailsSection', {'section': section.id}) }}"><h2>{{ section.secName }}</h2></a>
+
+                                {# Don't show if not connected #}
+                                {% if is_granted('USE_VIEW', app.user) %}
+                                    {# Different button if the user already follow a section #}
+                                    {% if section in app.user.useFollowedSections %}
+                                        <a href="{{ path('followSection', { 'section': section.id }) }}" class="btn btn-primary">Suivie ✓</a>
+                                    {% else %}
+                                        <a href="{{ path('followSection', { 'section': section.id}) }}" class="btn btn-outline-secondary">Suivre</a>
+                                    {% endif %}
+                                {% endif %}
+                                </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

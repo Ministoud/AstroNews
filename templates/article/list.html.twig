@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="backgrounded filled">
+        <div class="container spaced">
+            {# Alerts if the list is not filtered #}
+            {% if app.user == null %}
+                <div class="text-center alert alert-primary alert-dismissible fade show" role="alert">
+                    La liste des articles n'est pas triée car vous n'êtes pas connecté !
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% elseif app.user.useFollowedSections|length < 1 %}
+                <div class="text-center alert alert-primary alert-dismissible fade show" role="alert">
+                    La liste des articles n'est pas triée car vous ne suivez aucune section !
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+
+            {# List articles #}
+            {% for article in articles %}
+                <div class="card mb-3 bg-dark border-light text-white">
+                    <div itemscope itemtype="https://schema.org/NewsArticle">
+                        {# List article's sections #}
+                        <div class="card-header">
+                            {% if article.artSections is not empty %}
+                                <div>Dans
+                                    {% for section in article.artSections %}
+                                        <a href="{{ path('detailsSection', { 'section': section.id }) }}"><span itemprop="articleSection">{{ section.secName }}</span></a>
+                                        {% if section != article.artSections|last %}
+                                            |
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="row no-gutters" >
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    {# Image if not null #}
+                                    {% if article.artImage != null %}
+                                        <img class="m-2 rounded" itemprop="image" src="{{ asset('image/uploads/articleImages/' ~ article.artImage) }}" alt="Image de l'article">
+                                    {% else %}
+                                        <img class="m-2 rounded" itemprop="image" src="http://placehold.it/240x320" alt="Image de l'article">
+                                    {% endif %}
+                                </div>
+
+                                <div class="m-2 text-center">
+                                    {# Delete / Edit button if permitted #}
+                                    {% if is_granted('ART_EDIT', article) %}
+                                        <a class="btn btn-secondary" href="{{ path('editArticle', { 'article': article.id }) }}">Modifier</a>
+                                        <a class="btn btn-danger" href="{{ path('removeArticle', { 'article': article.id }) }}">Supprimer</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-9">
+                                <div class="card-body">
+                                    <h3 class="card-title" itemprop="headline">{{ article.artName }}</h3>
+                                    <p class="card-text" itemprop="articleBody"> {{ article.artContent > 500 ? article.artContent|slice(0,501)|split(' ')|slice(0, -1)|join(' ') ~ ' …' : article.artContent }}</p>
+                                    <small class="text-muted">Le <span itemprop="dateCreated datePublished">{{ article.artCreationDate|date('d/m/Y') }}</span> par <a itemprop="author publisher" itemscope itemtype="https://schema.org/Person" href="{{ path('userDetails', {'user': article.artAuthor.id}) }}"><span itemprop="name"><span itemprop="givenName">{{ article.artAuthor.useFirstName }}</span> <span itemprop="familyName">{{ article.artAuthor.useLastName }}</span></span></a></small>
+                                    <a class="btn btn-primary float-right" href="{{ path('detailsArticle', {'article': article.id}) }}">Lire plus</a>
+                                    {# Check if the article was edited #}
+                                    {% if not article.artEditionDate == null %}
+                                        <small class="text-muted">| Modifié le <span itemprop="dateModified">{{ article.artEditionDate|date('d/m/Y') }}</span></small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+

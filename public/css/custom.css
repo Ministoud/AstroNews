@@ -1,0 +1,25 @@
+.spaced
+{
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.masthead 
+{
+  height: 100vh;
+  min-height: 100vh;
+}
+
+.filled
+{
+  min-height: 100vh;
+  padding-top: 56px;
+}
+
+.backgrounded
+{
+background-image: url('../image/background.jpg');
+background-position: center;
+background-repeat: repeat;
+background-attachment: fixed;
+}
