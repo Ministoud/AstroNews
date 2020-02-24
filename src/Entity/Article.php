@@ -165,6 +165,13 @@ class Article
         return $this;
     }
 
+    public function clearArtSections()
+    {
+        $this->artSections = new ArrayCollection();
+
+        return $this;
+    }
+
     public function getArtImage(): ?string
     {
         return $this->artImage;

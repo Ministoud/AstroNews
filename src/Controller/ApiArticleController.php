@@ -47,29 +47,13 @@ class ApiArticleController extends AbstractController
      */
     public function addArticle(Request $request)
     {
-        $article = new Article();
-
         try
         {
             $postedJson = $request->getContent();
-            $deserializeArticle = $this->serializer->deserialize($postedJson, Article::class, 'json');
+            $article = $this->serializer->deserialize($postedJson, Article::class, 'json');
 
-            if($deserializeArticle->getArtName())
-            {
-                $article->setArtName($deserializeArticle->getArtName());
-            }
-
-            if($deserializeArticle->getArtContent())
-            {
-                $article->setArtContent($deserializeArticle->getArtContent());
-            }
-
-            if($deserializeArticle->getArtCreationDate())
-            {
-                $article->setArtCreationDate($deserializeArticle->getArtCreationDate());
-            }
-
-            $sections = $deserializeArticle->getArtSections();
+            $sections = $article->getArtSections();
+            $article->clearArtSections();
             foreach ($sections as $section)
             {
                 $section = $this->secRepo->findOneById($section->getId());
@@ -83,9 +67,9 @@ class ApiArticleController extends AbstractController
                 $article->addArtSection($section);
             }
 
-            if($deserializeArticle->getArtAuthor())
+            if($article->getArtAuthor())
             {
-                $author = $this->useRepo->findOneById($deserializeArticle->getArtAuthor()->getId());
+                $author = $this->useRepo->findOneById($article->getArtAuthor()->getId());
 
                 if(!$author)
                 {
@@ -97,13 +81,7 @@ class ApiArticleController extends AbstractController
                 $article->setArtAuthor($author);
             }
 
-            if($deserializeArticle->getArtImage())
-            {
-                $article->setArtImage($deserializeArticle->getArtImage());
-            }
-
             $errors = $this->validator->validate($article);
-
             if(count($errors) > 0)
             {
                 return $this->json($errors, 400);
