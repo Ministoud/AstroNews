@@ -24,18 +24,21 @@ class Article
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups("get:accepted")
+     * @Assert\NotBlank(message="This article need a title")
      */
     private $artName;
 
     /**
      * @ORM\Column(type="text")
      * @Groups("get:accepted")
+     * @Assert\NotBlank(message="This article need a content")
      */
     private $artContent;
 
     /**
      * @ORM\Column(type="date")
      * @Groups("get:accepted")
+     * @Assert\NotBlank(message="This article need a creation date")
      */
     private $artCreationDate;
 
@@ -49,6 +52,7 @@ class Article
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="useArticles")
      * @ORM\JoinColumn(nullable=false)
      * @Groups("get:accepted")
+     * @Assert\NotBlank(message="This article need an author")
      */
     private $artAuthor;
 
