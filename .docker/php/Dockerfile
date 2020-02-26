@@ -27,7 +27,11 @@ RUN docker-php-ext-install sodium
 RUN apt install -y libxslt-dev
 RUN docker-php-ext-install xsl
 
+RUN pecl install  oauth
+RUN docker-php-ext-enable oauth
 
+RUN pecl install xdebug
+RUN docker-php-ext-enable xdebug
 
 
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
