@@ -41,6 +41,7 @@ class UserVoter extends Voter
         // check conditions and return true to grant permission
         switch ($attribute) {
             case 'USE_EDIT':
+                    return false;
                 break;
             case 'USE_VIEW':
                 if($user)

@@ -16,17 +16,17 @@ class ArticleVoterTest extends TestCase
     {
         return [
             [
-                'isCorrectSubject' => true,
+                'subject' => new Article(),
                 'attribute' => 'ART_VIEW',
                 'isAbstain' => false
             ],
             [
-                'isCorrectSubject' => true,
+                'subject' => new Article(),
                 'attribute' => 'BAD_ATTRIBUTE',
                 'isAbstain' => true
             ],
             [
-                'isCorrectSubject' => false,
+                'subject' => new User(),
                 'attribute' => 'ART_VIEW',
                 'isAbstain' => true
             ]
@@ -38,11 +38,11 @@ class ArticleVoterTest extends TestCase
         return [
             [
                 'isConnected' => true,
-                'shouldBe' => VoterInterface::ACCESS_GRANTED
+                'expected' => VoterInterface::ACCESS_GRANTED
             ],
             [
                 'isConnected' => false,
-                'shouldBe' => VoterInterface::ACCESS_DENIED
+                'expected' => VoterInterface::ACCESS_DENIED
             ]
         ];
     }
@@ -54,50 +54,43 @@ class ArticleVoterTest extends TestCase
                 'authorId' => 1,
                 'userID' => 2,
                 'isAdmin' => true,
-                'shouldBe' => VoterInterface::ACCESS_GRANTED
+                'expected' => VoterInterface::ACCESS_GRANTED
             ],
             [
                 'authorId' => 1,
                 'userID' => 2,
                 'isAdmin' => false,
-                'shouldBe' => VoterInterface::ACCESS_DENIED
+                'expected' => VoterInterface::ACCESS_DENIED
             ],
             [
                 'authorId' => 1,
                 'userID' => 1,
                 'isAdmin' => false,
-                'shouldBe' => VoterInterface::ACCESS_GRANTED
+                'expected' => VoterInterface::ACCESS_GRANTED
             ],
             [
                 'authorId' => 1,
                 'userID' => 2,
                 'isAdmin' => false,
-                'shouldBe' => VoterInterface::ACCESS_DENIED
+                'expected' => VoterInterface::ACCESS_DENIED
             ]
         ];
     }
 
     /**
      * @dataProvider provideTestSupportsData
-     * @param $isCorrectSubject
+     * @param $subject
      * @param $attribute
      * @param $isAbstain
      */
-    public function testVoterSupportsAttribute($isCorrectSubject, $attribute, $isAbstain)
+    public function testVoterSupports($subject, $attribute, $isAbstain)
     {
         $securityMock = $this->prophesize(Security::class);
         $tokenMock = $this->prophesize(TokenInterface::class);
 
         $voter = new ArticleVoter($securityMock->reveal());
 
-        if($isCorrectSubject)
-        {
-            $result = $voter->vote($tokenMock->reveal(), new Article(), array($attribute));
-        }
-        else
-        {
-            $result = $voter->vote($tokenMock->reveal(), new User(), array($attribute));
-        }
+        $result = $voter->vote($tokenMock->reveal(), $subject, array($attribute));
 
         if($isAbstain)
         {
@@ -112,9 +105,9 @@ class ArticleVoterTest extends TestCase
     /**
      * @dataProvider provideTestConnectedData
      * @param $isConnected
-     * @param $shouldBe
+     * @param $expected
      */
-    public function testVoterUserConnected($isConnected, $shouldBe)
+    public function testVoterUserConnected($isConnected, $expected)
     {
         $securityMock = $this->prophesize(Security::class);
         $securityMock->isGranted('ROLE_ADMIN')->willReturn(false);
@@ -128,7 +121,7 @@ class ArticleVoterTest extends TestCase
         $voter = new ArticleVoter($securityMock->reveal());
 
         $result = $voter->vote($tokenMock->reveal(), new Article(), array('ART_VIEW'));
-        $this->assertEquals($shouldBe, $result);
+        $this->assertEquals($expected, $result);
     }
 
     /**
@@ -136,9 +129,9 @@ class ArticleVoterTest extends TestCase
      * @param $authorID
      * @param $userID
      * @param $isAdmin
-     * @param $shouldBe
+     * @param $expected
      */
-    public function testVoterUserIsAdminSuccess($authorID, $userID, $isAdmin, $shouldBe)
+    public function testVoterUserEditGranted($authorID, $userID, $isAdmin, $expected)
     {
         $author = new User();
         $author->setId($authorID);
@@ -158,6 +151,6 @@ class ArticleVoterTest extends TestCase
         $voter = new ArticleVoter($securityMock->reveal());
 
         $result = $voter->vote($tokenMock->reveal(), $article, array('ART_EDIT'));
-        $this->assertEquals($shouldBe, $result);
+        $this->assertEquals($expected, $result);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
+ * @ApiResource(normalizationContext={"groups"={"get:accepted"}})
  */
 class Article
 {
@@ -72,6 +74,11 @@ class Article
     public function __construct()
     {
         $this->artSections = new ArrayCollection();
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     public function getId(): ?int

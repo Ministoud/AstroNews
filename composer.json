@@ -5,6 +5,9 @@
         "php": "^7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-intl": "*",
+        "ext-json": "*",
+        "api-platform/api-pack": "^1.2",
         "intervention/image": "^2.5",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/asset": "5.0.*",
@@ -31,9 +34,7 @@
         "symfony/web-link": "5.0.*",
         "symfony/yaml": "5.0.*",
         "twig/cssinliner-extra": "^3.0",
-        "twig/inky-extra": "^3.0",
-      "ext-intl": "*",
-      "ext-json": "*"
+        "twig/inky-extra": "^3.0"
     },
     "require-dev": {
         "ext-oauth": "*",

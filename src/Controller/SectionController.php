@@ -1,7 +1,5 @@
 <?php
 
-//TODO: Ajouter un champ "description"
-
 namespace App\Controller;
 
 use App\Entity\Article;
