@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use function foo\func;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -68,10 +69,22 @@ class User implements UserInterface
      */
     private $Roles = [];
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserNotification", mappedBy="user", orphanRemoval=true)
+     */
+    private $notifications;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\UserSettings", mappedBy="user", orphanRemoval=true)
+     */
+    private $settings;
+
     public function __construct()
     {
         $this->useArticles = new ArrayCollection();
         $this->useFollowedSections = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
+        $this->settings = new ArrayCollection();
     }
 
     public function setId($id)
@@ -224,4 +237,78 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return Collection|UserNotification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function getUnreadNotifications()
+    {
+        $unreadNotifications = [];
+        foreach ($this->notifications as $notification)
+        {
+            if(!$notification->getHasBeenRead())
+            {
+                $unreadNotifications[] = $notification;
+            }
+        }
+        return $unreadNotifications;
+    }
+
+    public function addNotification(UserNotification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(UserNotification $notification): self
+    {
+        if ($this->notifications->contains($notification)) {
+            $this->notifications->removeElement($notification);
+            // set the owning side to null (unless already changed)
+            if ($notification->getUser() === $this) {
+                $notification->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserSettings[]
+     */
+    public function getSettings(): Collection
+    {
+        return $this->settings;
+    }
+
+    public function addSetting(UserSettings $setting): self
+    {
+        if (!$this->settings->contains($setting)) {
+            $this->settings[] = $setting;
+            $setting->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSetting(UserSettings $setting): self
+    {
+        if ($this->settings->contains($setting)) {
+            $this->settings->removeElement($setting);
+            // set the owning side to null (unless already changed)
+            if ($setting->getUserId() === $this) {
+                $setting->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
 }

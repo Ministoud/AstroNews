@@ -33,6 +33,41 @@
                             <li class="nav-item {% if 'login' in app.request.attributes.get('_route') %} active {% endif %}"><a class="nav-link" href="{{ path('login') }}">Se connecter</a></li>
                             <li class="nav-item {% if 'register' in app.request.attributes.get('_route') %} active {% endif %}"><a class="nav-link" href="{{ path('register') }}">Créer un compte</a></li>
                         {% else %}
+                            <li class="nav-item dropdown pt-1">
+                                <a href="#" class="niv-link" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img src="{{ asset('/image/icons/bell-icon.png') }}" alt="Icone de notification">
+                                    {% if app.user.unreadNotifications is not empty %}
+                                        <span class="badge badge-primary badge-pill">{{ app.user.unreadNotifications|length }}</span>
+                                    {%  endif %}
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right" style="max-height: 400px; overflow: auto" aria-labelledby="navbarDropdownMenuLink">
+                                    <a href="{{ path('notifSettings') }}" class="dropdown-header">Options de notification</a>
+                                    <div class="dropdown-divider"></div>
+                                    {% for notification in app.user.notifications|reverse %}
+                                        <div class="container mr-3">
+                                            <a href="{{ path('notifAction', {'notification': notification.id}) }}" class="pr-0 dropdown-item row">
+                                                <h6 class="m-0">
+                                                    {% if notification.hasBeenRead == false %}
+                                                        {% if notification.importance == "low" %}
+                                                            <span class="badge badge-primary badge-pill">&nbsp;</span>
+                                                        {% elseif notification.importance == "medium" %}
+                                                            <span class="badge badge-warning badge-pill">&nbsp;</span>
+                                                        {% elseif notification.importance == "high" %}
+                                                            <span class="badge badge-danger badge-pill">&nbsp;</span>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    <span>{{ notification.subject }}</span>
+                                                </h6>
+                                                <small>{{ notification.content }}</small>
+                                            </a>
+                                        </div>
+                                        {% if notification != app.user.notifications|first %}
+                                            <div class="dropdown-divider"></div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </li>
                             <li class="nav-item"><a class="nav-link " href="{{ path('logout') }}">Se déconnecter</a></li>
                         {% endif %}
                     </ul>

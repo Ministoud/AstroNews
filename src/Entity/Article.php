@@ -40,7 +40,6 @@ class Article
     /**
      * @ORM\Column(type="date")
      * @Groups("get:accepted")
-     * @Assert\NotBlank(message="This article need a creation date")
      */
     private $artCreationDate;
 
@@ -51,15 +50,14 @@ class Article
     private $artEditionDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="useArticles")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="useArticles", cascade={"merge"})
      * @ORM\JoinColumn(nullable=false)
      * @Groups("get:accepted")
-     * @Assert\NotBlank(message="This article need an author")
      */
     private $artAuthor;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Section", inversedBy="secArticles")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Section", inversedBy="secArticles", cascade={"merge"})
      * @Groups("get:accepted")
      */
     private $artSections;

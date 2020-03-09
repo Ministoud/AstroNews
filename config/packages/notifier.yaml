@@ -9,8 +9,8 @@ framework:
         channel_policy:
             # use chat/slack, chat/telegram, sms/twilio or sms/nexmo
             urgent: ['email']
-            high: ['email']
-            medium: ['browser']
-            low: ['browser']
+            high: ['database']
+            medium: ['database']
+            low: ['database']
         admin_recipients:
             - { email: admin@example.com }

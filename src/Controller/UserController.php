@@ -116,7 +116,6 @@ class UserController extends AbstractController
         $this->manager->persist($user);
         $this->manager->flush();
 
-        dump($request->getSession());
         $request->getSession()->set('referer', $request->headers->get('referer'));
         if($request->getSession()->get('referer'))
         {

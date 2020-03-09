@@ -3,31 +3,30 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use App\Entity\Section;
-use App\Entity\User;
+use App\Event\ArticleCreated;
+use App\Event\ArticleEdited;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Intervention\Image\ImageManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Notifier\NotifierInterface;
-use Symfony\Component\Notifier\Recipient\Recipient;
-use Symfony\Component\Notifier\Recipient\NoRecipient;
-use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ArticleController extends AbstractController
 {
     protected $repo;
     protected $manager;
+    protected $dispatcher;
 
-    public function __construct(ArticleRepository $repo, EntityManagerInterface $manager)
+    public function __construct(ArticleRepository $repo, EntityManagerInterface $manager, EventDispatcherInterface $eventDispatcher)
     {
         $this->repo = $repo;
         $this->manager = $manager;
+        $this->dispatcher = $eventDispatcher;
     }
 
     /**
@@ -101,14 +100,7 @@ class ArticleController extends AbstractController
             $this->manager->persist($article);
             $this->manager->flush();
 
-            // $notification = (new Notification('Nouvel Article'))
-            //     ->content('Cet article a bien été créé !')
-            //     ->importance(Notification::IMPORTANCE_URGENT)
-            // ;
-
-            // $recipient = new Recipient('raphael.stouder@bluewin.ch');
-
-            // $notifier->send($notification, $recipient);
+            $this->dispatcher->dispatch(new ArticleCreated($article),ArticleCreated::NAME);
 
             return $this->redirectToRoute('detailsArticle', array('article' => $article->getId()));
         }
@@ -140,6 +132,8 @@ class ArticleController extends AbstractController
         
         if($form->isSubmitted() && $form->isValid())
         {
+            $this->dispatcher->dispatch(new ArticleEdited($article), ArticleEdited::NAME);
+
             $imageFile = $form->get('artImage')->getData();
             if($imageFile)
             {
@@ -164,6 +158,8 @@ class ArticleController extends AbstractController
 
             $article->setArtEditionDate(new \DateTime('now'));
             $this->manager->flush();
+
+            $this->dispatcher->dispatch(new ArticleEdited($article), ArticleEdited::NAME);
 
             return $this->redirectToRoute('detailsArticle', array('article' => $article->getId()));
         }
