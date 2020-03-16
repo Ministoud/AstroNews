@@ -13,7 +13,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ArticleController extends AbstractController
@@ -65,7 +64,7 @@ class ArticleController extends AbstractController
     /**
      * @Route("/article/add", name="addArticle")
      */
-    public function addArticle(Request $request, NotifierInterface $notifier)
+    public function addArticle(Request $request)
     {
         $article = new Article();
 
@@ -132,12 +131,9 @@ class ArticleController extends AbstractController
         
         if($form->isSubmitted() && $form->isValid())
         {
-            $this->dispatcher->dispatch(new ArticleEdited($article), ArticleEdited::NAME);
-
             $imageFile = $form->get('artImage')->getData();
             if($imageFile)
             {
-                
                 if($imageFile != $defaultImageFilename)
                 {
                     $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);

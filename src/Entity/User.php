@@ -75,7 +75,7 @@ class User implements UserInterface
     private $notifications;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserSettings", mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\UserNotificationSettings", mappedBy="user", orphanRemoval=true)
      */
     private $settings;
 
@@ -282,30 +282,30 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|UserSettings[]
+     * @return Collection|UserNotificationSettings[]
      */
     public function getSettings(): Collection
     {
         return $this->settings;
     }
 
-    public function addSetting(UserSettings $setting): self
+    public function addSetting(UserNotificationSettings $setting): self
     {
         if (!$this->settings->contains($setting)) {
             $this->settings[] = $setting;
-            $setting->setUserId($this);
+            $setting->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeSetting(UserSettings $setting): self
+    public function removeSetting(UserNotificationSettings $setting): self
     {
         if ($this->settings->contains($setting)) {
             $this->settings->removeElement($setting);
             // set the owning side to null (unless already changed)
-            if ($setting->getUserId() === $this) {
-                $setting->setUserId(null);
+            if ($setting->getUser() === $this) {
+                $setting->setUser(null);
             }
         }
 

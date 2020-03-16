@@ -8,7 +8,21 @@
 
                     <h2 class="card-header border-secondary text-center">Options de notification</h2>
                     <div class="container p-4">
-                        {# TODO: Ajouter la form des settings ici #}
+
+                        {{ form_start(settingsForm) }}
+                            {% for form in settingsForm.settings %}
+                                <div class="row my-4">
+                                    <span class="col align-self-center">{{ settingsForm.vars.data['labels'][loop.index0] }}</span>
+                                    <span class="col">{{ form_widget(form) }}</span>
+                                </div>
+
+                                {% if not loop.last %}
+                                    <div class="border-top my-3"></div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <button type="submit" class="btn btn-primary">Valider les modifications</button>
+                        {{ form_end(settingsForm) }}
                     </div>
                 </div>
             </div>

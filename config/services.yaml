@@ -30,3 +30,7 @@ services:
     App\Notification\Channel\DatabaseChannel:
         tags:
             - { name: notifier.channel, channel: database }
+
+    App\Form\NotificationSettingsType:
+        arguments:
+            $channels: !tagged notifier.channel
