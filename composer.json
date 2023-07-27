@@ -7,10 +7,17 @@
         "ext-iconv": "*",
         "ext-intl": "*",
         "ext-json": "*",
-        "api-platform/api-pack": "^1.2",
+        "api-platform/core": "^2.5",
+        "doctrine/annotations": "^1.0",
+        "doctrine/doctrine-bundle": "^2.3",
+        "doctrine/doctrine-migrations-bundle": "^3.2",
+        "doctrine/orm": "^2.14",
         "intervention/image": "^2.5",
+        "nelmio/cors-bundle": "^2.2",
+        "phpdocumentor/reflection-docblock": "^5.3",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/asset": "5.0.*",
+        "symfony/cache": "5.0.*",
         "symfony/console": "5.0.*",
         "symfony/dependency-injection": "5.0.*",
         "symfony/dotenv": "5.0.*",
@@ -25,35 +32,42 @@
         "symfony/mailer": "5.0.*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/notifier": "5.0.*",
-        "symfony/orm-pack": "*",
         "symfony/process": "5.0.*",
+        "symfony/property-access": "5.0.*",
+        "symfony/property-info": "5.0.*",
         "symfony/security-bundle": "5.0.*",
-        "symfony/serializer-pack": "*",
+        "symfony/serializer": "5.0.*",
         "symfony/translation": "5.0.*",
-        "symfony/twig-pack": "^1.0",
+        "symfony/twig-bundle": "5.0.*",
         "symfony/validator": "5.0.*",
         "symfony/web-link": "5.0.*",
         "symfony/yaml": "5.0.*",
         "twig/cssinliner-extra": "^3.0",
+        "twig/extra-bundle": "^2.12|^3.0",
         "twig/inky-extra": "^3.0",
-      "ext-spltype": "*"
+        "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
         "ext-oauth": "*",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
         "fzaninotto/faker": "^1.9",
         "phpunit/phpunit": "^8.5",
-        "symfony/debug-pack": "*",
+        "symfony/browser-kit": "5.0.*",
+        "symfony/css-selector": "5.0.*",
+        "symfony/debug-bundle": "5.0.*",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^5.0",
-        "symfony/profiler-pack": "*",
-        "symfony/test-pack": "*"
+        "symfony/stopwatch": "5.0.*",
+        "symfony/web-profiler-bundle": "5.0.*"
     },
     "config": {
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": true
+        }
     },
     "autoload": {
         "psr-4": {

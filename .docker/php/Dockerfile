@@ -1,4 +1,4 @@
-FROM php:7.2.5-fpm
+FROM php:7.4-fpm
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends vim curl debconf subversion git apt-transport-https apt-utils \
@@ -8,12 +8,8 @@ RUN docker-php-ext-install pdo pdo_mysql
 COPY php.ini /etc/php/7.2.3/php.ini
 COPY php-fpm-pool.conf /etc/php/7.2.3/pool.d/www.conf
 
-RUN curl -sS -o /tmp/icu.tar.gz -L http://download.icu-project.org/files/icu4c/57.1/icu4c-57_1-src.tgz && tar -zxf /tmp/icu.tar.gz -C /tmp && cd /tmp/icu/source && ./configure --prefix=/usr/local && make && make install
-
-
-
-
-RUN docker-php-ext-configure intl --with-icu-dir=/usr/local && \
+RUN apt-get install -y libicu-dev && \
+    docker-php-ext-configure intl && \
     docker-php-ext-install intl
 
 RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
@@ -30,9 +26,8 @@ RUN docker-php-ext-install xsl
 RUN pecl install  oauth
 RUN docker-php-ext-enable oauth
 
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
-
+RUN pecl install xdebug-3.1.5 && \
+    docker-php-ext-enable xdebug
 
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
    mv composer.phar /usr/local/bin/composer

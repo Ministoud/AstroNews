@@ -18,7 +18,7 @@ class NotificationSettingsType extends AbstractType
     private $notificationEvents;
     private $choices = [];
 
-    public function __construct(iterable $channels)
+    public function __construct(iterable $channels = [])
     {
         $this->notificationEvents = NotifierSubscriber::getSubscribedEvents();
 
